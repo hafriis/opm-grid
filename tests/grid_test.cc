@@ -14,6 +14,8 @@
 
 #include <opm/grid/verteq/topsurf.hpp>
 
+#include <opm/grid/common/VerteqColumnUtility.hpp>
+
 #define DISABLE_DEPRECATED_METHOD_CHECK 1
 #if DUNE_VERSION_NEWER(DUNE_GRID,2,5)
 #include <dune/grid/test/gridcheck.hh>
@@ -95,7 +97,7 @@ void testGridIteration( const GridView& gridView )
             }
         }
 
-        if (numIs != 6)
+        if (numIs != 2 * GridView::dimension )
             std::cout << "number of intersections is wrong for element " << numElem << "\n";
 
         ++ numElem;
@@ -106,8 +108,38 @@ void testGridIteration( const GridView& gridView )
 }
 
 template <class Grid>
+void testVerteq(const Grid& grid)
+{
+    typedef typename Grid::LeafGridView GridView;
+    GridView gv = grid.leafGridView();
+
+    Dune::VerteqColumnUtility< Grid > verteqUtil ( grid );
+
+    std::cout << "Start checking vertical equilibirum utility." << std::endl;
+
+    const auto end = gv.template end< 0 > ();
+    for( auto it = gv.template begin< 0 > (); it != end; ++it )
+    {
+      const auto& entity = *it ;
+      std::cout << "Start column for entity " << entity.impl().index() << std::endl;
+      const auto endCol = verteqUtil.end( entity );
+      for( auto col = verteqUtil.begin( entity ); col != endCol; ++col )
+      {
+        const auto& collCell = *col;
+        std::cout << "Column cell [ " << collCell.index()
+                  << " ]: h = " << collCell.h()
+                  << " dz = "   << collCell.dz() << std::endl;
+      }
+    }
+    std::cout << "Finished checking vertical equilibirum utility." << std::endl;
+}
+
+
+template <class Grid>
 void testGrid(Grid& grid, const std::string& name)
 {
+    testVerteq( grid );
+
     typedef typename Grid::LeafGridView GridView;
 #if DUNE_VERSION_NEWER(DUNE_GRID,2,5)
     try {
@@ -192,11 +224,11 @@ int main(int argc, char** argv )
       Grid2D tsDune (*ts);
       std::cout << "tsDune after " << std::endl;
       testGrid ( tsDune, "ts");
+      return 0;
 
 #endif
       Dune::GridPtr< Grid > gridPtr( dgfFile );
       testGrid( *gridPtr, "polyhedralgrid-dgf" );
-
     }
 
     /*
