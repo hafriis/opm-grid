@@ -113,6 +113,7 @@ void testVerteq(const Grid& grid)
     typedef typename Grid::LeafGridView GridView;
     GridView gv = grid.leafGridView();
 
+
     Dune::VerteqColumnUtility< Grid > verteqUtil ( grid );
 
     std::cout << "Start checking vertical equilibirum utility." << std::endl;
@@ -128,6 +129,7 @@ void testVerteq(const Grid& grid)
         const auto& collCell = *col;
         std::cout << "Column cell [ " << collCell.index()
                   << " ]: h = " << collCell.h()
+	          << " fine cell idx " << collCell.fineCellIndex() 
                   << " dz = "   << collCell.dz() << std::endl;
       }
     }

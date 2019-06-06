@@ -31,7 +31,7 @@ namespace Dune
         int maxVertRes() const { return topSurf_.max_vert_res; }
 
         // this can be used to access an entity in the original 3D grid
-        int fineCellIndex() const { return topSurf_.fine_col[ index_ ]; }
+        int fineCellIndex() const { return topSurf_.col_cells[ index_ ]; }
     };
 
 
