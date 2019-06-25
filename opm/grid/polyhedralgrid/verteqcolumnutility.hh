@@ -99,6 +99,15 @@ namespace Dune
         return IteratorType( nullptr, -1 );
       }
     }
+
+    //************HAF-------------START*****************************
+    double get_H_VE( const Entity& entity ) const
+    {
+      return topSurfaceGrid_->h_tot[entity.impl().index()];
+    }
+    //************HAF-------------END*******************************
+    
+    
   };
 
 } // end namespace Dune
