@@ -103,7 +103,13 @@ namespace Dune
     //************HAF-------------START*****************************
     double get_H_VE( const Entity& entity ) const
     {
+      //std::cout << "Idx= " <<  entity.impl().index() << std::endl;
       return topSurfaceGrid_->h_tot[entity.impl().index()];
+    }
+
+    double get_H_VE( const int& idx ) const
+    {
+      return topSurfaceGrid_->h_tot[idx];
     }
     //************HAF-------------END*******************************
     
